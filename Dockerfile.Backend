@@ -1,0 +1,44 @@
+# Stage 1: Build Auth service
+FROM node:14 AS auth-build
+WORKDIR /app/auth
+COPY ../Auth/package*.json ./
+RUN npm install
+COPY ../Auth ./
+
+# Stage 2: Build event-bus service
+FROM node:14 AS event-bus-build
+WORKDIR /app/event-bus
+COPY ../event-bus/package*.json ./
+RUN npm install
+COPY ../event-bus ./
+
+# Stage 3: Build main backend service
+FROM node:14 AS backend-build
+WORKDIR /app/backend
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+# Stage 4: Create the final image
+FROM node:14
+WORKDIR /app
+
+# Copy Auth service
+COPY --from=auth-build /app/auth /app/auth
+
+# Copy event-bus service
+COPY --from=event-bus-build /app/event-bus /app/event-bus
+
+# Copy backend service
+COPY --from=backend-build /app/backend /app/backend
+
+# Install a process manager to run multiple services
+RUN npm install -g concurrently
+
+# Expose necessary ports
+EXPOSE 4000  
+EXPOSE 7000  
+EXPOSE 4001  
+
+# Start all services using concurrently
+CMD ["concurrently", "--kill-others", "--names", "auth,event-bus,classroom", "node /app/auth/index.js", "node /app/event-bus/index.js", "node /app/backend/index.js"]

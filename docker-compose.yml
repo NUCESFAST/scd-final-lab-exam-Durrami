@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: 21I_1164_Backend
+    build:
+      context: ./Classrooms  # Context for the backend code
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3164:4001"  # Map port 4001 of the backend container (Classroom service) to port 3164 on the host
+      - "4000:4000"  # Map port 4000 of the Auth service
+      - "7000:7000"  # Map port 7000 of the event-bus service
+    environment:
+      - NODE_ENV=production
+
+  frontend:
+    container_name: 21I_1164_Frontend
+    build:
+      context: ./client/src
+      dockerfile: Dockerfile
+    ports:
+      - "1164:80"  # Mapping port 80 of the frontend container to port 1164 on the host
+    environment:
+      - NODE_ENV=production
+
+  database:
+    container_name: 21I_1164_Database
+    build:
+      context: ./Post
+      dockerfile: Dockerfile
+    ports:
+      - "6000:6000"
+    environment:
+      - NODE_ENV=production
