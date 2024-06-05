@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-     environment {
-         registry = "durrami/scd_final"
-        DOCKER_CREDENTIALS ='8c231227-9fb5-4f4c-bb9c-20bae4c863fb'
+    environment {
+        registry = "durrami/scd_final"
+        DOCKER_CREDENTIALS = '8c231227-9fb5-4f4c-bb9c-20bae4c863fb'
         dockerImage = ''
     }
 
@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = docker.build(registry + ":$BUILD_NUMBER", "./Classrooms") // Specify the Dockerfile location
                 }
             }
         }
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     // Deploy using Docker Compose
-                    sh 'docker-compose up -d'
+                    sh 'docker-compose -f ./Classrooms/docker-compose.yml up -d' // Specify the path to docker-compose.yml
                 }
             }
         }
@@ -43,7 +43,7 @@ pipeline {
             // Cleanup
             script {
                 // Stop and remove containers after use
-                sh 'docker-compose down'
+                sh 'docker-compose -f ./Classrooms/docker-compose.yml down' // Specify the path to docker-compose.yml
             }
         }
     }
