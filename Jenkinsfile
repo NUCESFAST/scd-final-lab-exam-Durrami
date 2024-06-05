@@ -1,51 +1,64 @@
 pipeline {
     agent any
 
+    environment {
+        registry = "durrami/scd_final"
+        DOCKER_CREDENTIALS = '8c231227-9fb5-4f4c-bb9c-20bae4c863fb'
+        dockerImage = ''
+    }
+
     stages {
         stage('Checkout') {
-            steps {
-                // Checkout code from GitHub
-                git branch: 'main', credentialsId: 'your-github-credentials', url: 'https://github.com/yourusername/yourrepository.git'
-            }
-        }
+    steps {
+        git branch: 'main', url: 'https://github.com/NUCESFAST/scd-final-lab-exam-Durrami.git'
+    }
+}
 
         stage('Install Dependencies') {
             steps {
-                // Install dependencies (if any)
-                sh 'npm install'  // Example command for Node.js project
+                sh 'npm install'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                // Build Docker image
-                sh 'docker build -t yourimage:latest .'
+                script {
+                    // Build Docker image
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
             }
         }
 
         stage('Push Docker Image to Docker Hub') {
             steps {
-                // Login to Docker Hub
-                withCredentials([usernamePassword(credentialsId: 'your-dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                script {
+                    // Login to Docker Hub and push the built image
+                    docker.withRegistry('', DOCKER_CREDENTIALS) {
+                        dockerImage.push()
+                    }
                 }
-
-                // Push Docker image to Docker Hub
-                sh 'docker push yourimage:latest'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                // Run Docker container
-                sh 'docker run -d -p 8080:80 yourimage:latest'  // Example command, adjust ports as needed
+                sh 'docker run -d -p 8080:80 21I_1164_Backend:latest'
             }
         }
 
         stage('Validate Application') {
             steps {
                 // Execute tests or perform validation
-                // Example: sh 'npm test'
+            }
+        }
+    }
+
+    post {
+        always {
+            // Cleanup
+            script {
+                // Stop and remove containers after use
+                sh 'docker-compose down'
             }
         }
     }
