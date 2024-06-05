@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 1  # Adjust as needed for scaling
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: scd-final-lab-exam-durrami-frontend:latest
+        ports:
+        - containerPort: 1164  # Port your frontend application is listening on
+        env:
+        - name: NODE_ENV
+          value: production

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1  # Adjust as needed for scaling
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: scd-final-lab-exam-durrami-backend:latest
+        ports:
+        - containerPort: 3164  # Port your backend application is listening on
+        env:
+        - name: NODE_ENV
+          value: production
