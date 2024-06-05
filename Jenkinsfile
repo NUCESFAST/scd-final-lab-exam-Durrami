@@ -48,7 +48,8 @@ pipeline {
 
         stage('Validate Application') {
             steps {
-                // Execute tests or perform validation
+                sh 'npm install'
+                sh 'npm test'
             }
         }
     }
