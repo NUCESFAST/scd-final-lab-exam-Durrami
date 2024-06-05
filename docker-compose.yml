@@ -14,8 +14,8 @@ services:
   frontend:
     container_name: 21I_1164_Frontend
     build:
-      context: ./client/src
-      dockerfile: Dockerfile
+      context: ./client  # Correct context for the frontend code
+      dockerfile: src/Dockerfile  # Dockerfile path inside the client directory
     ports:
       - "1164:80"  # Mapping port 80 of the frontend container to port 1164 on the host
     environment:
