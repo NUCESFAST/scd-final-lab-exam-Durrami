@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     // Deploy using Docker Compose
-                    sh 'docker-compose -f ./Classrooms/docker-compose.yml up -d' // Specify the path to docker-compose.yml
+                    sh 'docker-compose -f ./docker-compose.yml up -d' // Specify the path to docker-compose.yml
                 }
             }
         }
@@ -43,7 +43,7 @@ pipeline {
             // Cleanup
             script {
                 // Stop and remove containers after use
-                sh 'docker-compose -f ./Classrooms/docker-compose.yml down' // Specify the path to docker-compose.yml
+                sh 'docker-compose -f ./docker-compose.yml down' // Specify the path to docker-compose.yml
             }
         }
     }
