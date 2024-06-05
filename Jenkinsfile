@@ -9,9 +9,11 @@ pipeline {
 
     stages {
         stage('Checkout') {
-    steps {
-        git branch: 'main', url: 'https://github.com/NUCESFAST/scd-final-lab-exam-Durrami.git'
-    }
+            steps {
+                git branch: 'main', credentialsId: '41e22150-c014-49d8-ae4d-5944f01dd8ec', url: 'https://github.com/NUCESFAST/scd-final-lab-exam-Durrami.git'
+            }
+        }
+
 }
 
         stage('Install Dependencies') {
